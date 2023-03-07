@@ -1,6 +1,7 @@
 #include "celda.h"
 #include <iomanip>
 #include <fstream>
+
 #ifndef tablero_h
 #define tablero_h
 
@@ -29,5 +30,7 @@ void ponCeldaEnPos(tTablero& tablero, int fila, int columna, const tCelda& c);
 void mostrar(const tTablero& tab);
 
 void leer(ifstream& archivo, tTablero& tab);
+
+//int inToInt(char in);
 
 #endif

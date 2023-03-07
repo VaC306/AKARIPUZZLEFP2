@@ -52,9 +52,33 @@ void reduceIluminacion(tCelda& c)
 }
 
 
-//tCelda charToCelda(char c)
-//{
-//    preguntar si hay que poner un atributo pricado llamado celda
-//    if (c == 'X')
-//        return ;
-//}
+tCelda charToCelda(char c)
+{
+    tCelda celda;
+    if (c == 'X')
+    {
+        celda.tipo = PARED;
+    }
+    else if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4')
+    {
+        celda.tipo = PARED;
+        celda.numBombillas = inToInt(c);
+    }
+    //un caso mas
+    return celda;
+
+}
+
+int inToInt(char in)
+{
+    if (in == '0')
+        return 0;
+    else if (in == '1')
+        return 1;
+    else if (in == '2')
+        return 2;
+    else if (in == '3')
+        return 3;
+    else if (in == '4')
+        return 4;
+}
