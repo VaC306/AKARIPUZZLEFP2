@@ -52,9 +52,9 @@ void reduceIluminacion(tCelda& c)
 }
 
 
-tCelda charToCelda(char c)
-{
-    //preguntar si hay que poner un atributo pricado llamado celda
-   // if (c == 'X')
-       // return ;
-}
+//tCelda charToCelda(char c)
+//{
+//    preguntar si hay que poner un atributo pricado llamado celda
+//    if (c == 'X')
+//        return ;
+//}

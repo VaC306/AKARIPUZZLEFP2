@@ -14,7 +14,7 @@ void mostrar(const tTablero& tab)
 {
     for (int i = 0; i < tab.nCols; ++i) //imprime la cabecera donde estan los indices de columnas
     {
-        cout << setw(2) << "|" << setw(2) << i ;
+        cout << setw(2) << "|" << BLUE << setw(2) << i << RESET;
     }
     cout << " |\n";
 
@@ -26,10 +26,10 @@ void mostrar(const tTablero& tab)
             cout << "-" << "-" << "-" << "+";
         }
         cout << "\n";
-        cout << i;
+        cout << BLUE << i << RESET;
         for (int k = 0; k < tab.nCols; ++k)
         {
-            cout << "|" << setw(4);
+           cout << "|" <<setw(4);
         }
         cout << "   |\n";
     }
@@ -54,9 +54,4 @@ tCelda celdaEnPos(const tTablero& tablero, int fila, int columna)
 void ponCeldaEnPos(tTablero& tablero, int fila, int columna, const tCelda& c)
 {
     tablero.datos[fila][columna] = c;
-}
-
-tCelda celdaEnPos(const tTablero& tablero, int fila, int columna)
-{
-    return tablero.datos[fila][columna];
 }

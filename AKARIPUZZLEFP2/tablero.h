@@ -4,6 +4,10 @@
 #ifndef tablero_h
 #define tablero_h
 
+#define RESET   "\033[0m"
+#define BLUE    "\033[36m"      /* Blue */
+#define WHITE   "\033[37m"      /* White */
+
 const int MAX_FILS = 10;
 const int MAX_COLS = 10;
 
