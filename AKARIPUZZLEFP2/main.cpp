@@ -21,12 +21,13 @@ int main()
         mostrar(tab);
         cout << "introduzca la fila y columna donde quiere realizar un cambio \n";
         cin >> fila >> columna;
-        while(!abandono(fila, columna))
-        { 
+        do
+        {
             ejecutarPos(tab, fila, columna);
             mostrar(tab);
+            cout << "introduzca la fila y columna donde quiere realizar un cambio \n";
             cin >> fila >> columna;
-        }
+        } while (!abandono(fila, columna) || !estaTerminado(tab));
     }
     archivo.close();
     return 0;
