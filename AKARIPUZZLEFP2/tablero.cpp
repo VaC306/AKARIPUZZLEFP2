@@ -43,7 +43,7 @@ void mostrar(const tTablero& tab)
             }
             else if (tab.datos[i][k].tipo == SIN_BOMBILLA) //celdas de color blanco WHITE de alguna manera
             {
-                cout <<setw(2)<< "V" << setw(2) << "|";
+                cout << BG_WHITE << "xxx" << RESET << "|";
             }
 
         }
@@ -83,20 +83,6 @@ void leer(ifstream& archivo, tTablero& tab)
             }
         }
     }
-}
-
-int inToInt(char in)
-{
-    if (in == '0')
-        return 0;
-    else if (in == '1')
-        return 1;
-    else if (in == '2')
-        return 2;
-    else if (in == '3')
-        return 3;
-    else if (in == '4')
-        return 4;
 }
 
 tCelda celdaEnPos(const tTablero& tablero, int fila, int columna)
