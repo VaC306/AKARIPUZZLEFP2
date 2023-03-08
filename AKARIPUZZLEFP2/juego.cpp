@@ -38,3 +38,47 @@ void resetearTablero(tTablero& tablero)
         }
     }
 }
+
+void ejecutarPos(tTablero& tablero, int fila, int columna)
+{
+    int i = fila;
+    int j = columna;
+    if (tablero.datos[fila][columna].tipo == BOMBILLA)
+    {
+        tablero.datos[fila][columna].tipo = SIN_BOMBILLA;
+    }
+
+    else if (tablero.datos[fila][columna].tipo != BOMBILLA)
+    {
+        tablero.datos[fila][columna].tipo = BOMBILLA;
+        while (tablero.datos[i][columna].tipo != PARED && i > 0)
+        {
+            --i;
+            tablero.datos[i][columna].tipo = SIN_BOMBILLA;
+            tablero.datos[i][columna].numBombillas++;
+        }
+        int i = fila;
+        while (tablero.datos[i][columna].tipo != PARED && i < 4)
+        {
+            
+            ++i;
+            tablero.datos[i][columna].tipo = SIN_BOMBILLA;
+            tablero.datos[i][columna].numBombillas++;
+        }
+        while (tablero.datos[fila][j].tipo != PARED && j < 4)
+        {
+
+            ++j;
+            tablero.datos[fila][j].tipo = SIN_BOMBILLA;
+            tablero.datos[fila][j].numBombillas++;
+        }
+        int j = columna;
+        while (tablero.datos[fila][j].tipo != PARED && j > 0)
+        {
+
+            --j;
+            tablero.datos[fila][j].tipo = SIN_BOMBILLA;
+            tablero.datos[fila][j].numBombillas++;
+        }
+    }  
+}

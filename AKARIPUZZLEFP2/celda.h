@@ -35,6 +35,4 @@ void aumentaIluminacion(tCelda& c);
 
 void ponBombilla(tCelda& c);
 
-int inToInt(char in);
-
 #endif

@@ -1,4 +1,8 @@
 #include "tablero.h"
+#include "colors.h"
+#include <iostream>
+#include <iomanip>
+using namespace std;
 
 int numFilas(const tTablero& tab)
 {
@@ -10,51 +14,50 @@ int numCols(const tTablero& tab)
     return tab.nCols;
 }
 
-void mostrar(const tTablero& tab)
-{
-    for (int i = 0; i < tab.nCols; ++i) //imprime la cabecera donde estan los indices de columnas
-    {
-        cout << setw(2) << "|" << BLUE << setw(2) << i << RESET;
-    }
-    cout << " |\n";
+void mostrarSeparador(const tTablero& tab) {
+    cout << "\t -+";
+    for (int col = 0; col < numCols(tab); col++)
+        cout << setw(HUECOS + 2) << setfill('-') << '+' << setfill(' ');
+    cout << endl;
+}
 
-    for(int i = 0; i < tab.nFils; ++i)
-    {
-        cout << "-" << "+";
-        for (int j = 0; j < tab.nCols; ++j)
-        {
-            cout << "-" << "-" << "-" << "+";
+void mostrarCeldas(const tTablero& tab) {
+    for (int fila = 0; fila < numFilas(tab); fila++) {
+        // mostrar n de fila
+        cout << "\t" << LBLUE << setw(HUECOS) << fila << RESET << '|';
+        // mostrar contenido de la fila del tablero
+        for (int col = 0; col < numCols(tab); col++) {
+            if (esBombilla(tab.datos[fila][col])) cout << BG_YELLOW << BLACK;
+            else
+                if (esParedRestringida(tab.datos[fila][col])) cout << BG_BLACK << WHITE;
+                else
+                    if (estaApagada(tab.datos[fila][col])) cout << BG_WHITE << WHITE;
+                    else
+                        if (estaIluminada(tab.datos[fila][col])) cout << BG_YELLOW << WHITE;
+            cout << setw(HUECOS) << setfill(' ') << celdaToChar(tab.datos[fila][col]) << " " << RESET;
+            cout << '|';
         }
-        cout << "\n";
-        cout << BLUE << i << RESET;
-        for (int k = 0; k < tab.nCols; ++k)
-        {   
-            if (k == 0)
-            {
-                cout << "|";
-            }
-            if (tab.datos[i][k].tipo == PARED && tab.datos[i][k].numBombillas == 0) //celdas consideradas pared
-            {
-                cout << setw(4) <<"|";
-            }
-            else if (tab.datos[i][k].tipo == PARED && tab.datos[i][k].numBombillas  != 0) //celdas con una restriccion en cuanto al numero de bombillas
-            {
-                cout << setw(2) << tab.datos[i][k].numBombillas << setw(2) << "|";
-            }
-            else if (tab.datos[i][k].tipo == SIN_BOMBILLA) //celdas de color blanco WHITE de alguna manera
-            {
-                cout << BG_WHITE << "xxx" << RESET << "|";
-            }
-
-        }
-        cout << "\n";
-    }
-    cout << "-" << "+";
-    for (int j = 0; j < tab.nCols; ++j)
-    {
-        cout << "-" << "-" << "-" << "+";
+        cout << endl;
+        mostrarSeparador(tab);
     }
 }
+
+void mostrarValoresColumnas(const tTablero& tab) {
+    cout << "\t  |";
+    for (int col = 0; col < numCols(tab); col++)
+        cout << LBLUE << setw(HUECOS) << col << " " << RESET << '|';
+    cout << endl;
+    mostrarSeparador(tab);
+}
+
+
+
+void mostrar(const tTablero& tab) {
+    mostrarValoresColumnas(tab);
+    mostrarCeldas(tab);
+    cout << endl;
+}
+
 
 void leer(ifstream& archivo, tTablero& tab)
 {
@@ -66,21 +69,7 @@ void leer(ifstream& archivo, tTablero& tab)
         for (int j = 0; j < tab.nCols; ++j)
         {
             archivo >> in;
-            if (in == '.')
-            {
-                tab.datos[i][j].tipo = SIN_BOMBILLA;
-                tab.datos[i][j].numBombillas = 0;
-            }
-            else if (in == 'X')
-            {
-                tab.datos[i][j].tipo = PARED;
-                tab.datos[i][j].numBombillas = 0;
-            }
-            else if (in == '0' || in == '1' || in == '2' || in == '3' || in == '4')
-            {
-                tab.datos[i][j].tipo = PARED;
-                tab.datos[i][j].numBombillas = inToInt(in);
-            }
+            tab.datos[i][j] = charToCelda(in);
         }
     }
 }

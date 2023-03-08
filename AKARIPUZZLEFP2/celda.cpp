@@ -6,12 +6,42 @@
 using namespace std;
 
 
+int charToInt(char in)
+{
+    if (in == '0')
+        return 0;
+    else if (in == '1')
+        return 1;
+    else if (in == '2')
+        return 2;
+    else if (in == '3')
+        return 3;
+    else if (in == '4')
+        return 4;
+}
+
+char intToChar(int in)
+{
+    if (in == 0)
+        return '0';
+    else if (in == 1)
+        return '1';
+    else if (in == 2)
+        return '2';
+    else if (in == 3)
+        return '3';
+    else if (in == 4)
+        return '4';
+}
+
 char celdaToChar(const tCelda& celda)
 {
     if (celda.tipo == BOMBILLA)
         return '*';
-    else if (celda.tipo == PARED)
-        return celda.numBombillas;
+    else if (celda.tipo == PARED && celda.numBombillas > 0)
+        return intToChar(celda.numBombillas);
+    else
+        return ' ';
 }
 
 bool esPared(const tCelda& c)
@@ -53,32 +83,35 @@ void reduceIluminacion(tCelda& c)
 
 
 tCelda charToCelda(char c)
-{
+{   
     tCelda celda;
-    if (c == 'X')
+    if (c == '.')
+    {
+        celda.tipo = SIN_BOMBILLA;
+        celda.numBombillas = 0;
+    }
+    else if (c == 'X')
     {
         celda.tipo = PARED;
+        celda.numBombillas = 0;
     }
     else if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4')
     {
         celda.tipo = PARED;
-        celda.numBombillas = inToInt(c);
+        celda.numBombillas = charToInt(c);
     }
-    //un caso mas
     return celda;
-
 }
 
-int inToInt(char in)
+bool esParedRestringida(const tCelda& c)
 {
-    if (in == '0')
-        return 0;
-    else if (in == '1')
-        return 1;
-    else if (in == '2')
-        return 2;
-    else if (in == '3')
-        return 3;
-    else if (in == '4')
-        return 4;
+    if (c.tipo == PARED && c.numBombillas > 0)
+        return true;
+    else 
+        return false;
+}
+
+int numParedRestringida(const tCelda& c)
+{
+    return c.numBombillas;
 }
