@@ -18,7 +18,7 @@ int numBombillasVecinas(const tTablero& tablero, int fila, int columna)
 
 bool abandono(int fila, int columna)
 {
-    if (fila = -1 && columna == 0)
+    if (fila == -1 && columna == 0)
         return true;
     else
         return false;
@@ -43,16 +43,21 @@ void ejecutarPos(tTablero& tablero, int fila, int columna)
 {
     int i = fila;
     int j = columna;
-    if (esBombilla(tablero.datos[fila][columna]))
+    if (i <= tablero.nFils && j <= tablero.nCols)
     {
-        tablero.datos[fila][columna].tipo = SIN_BOMBILLA;
-        cambiarIluminacion(tablero, fila, columna, false);
+        if (esBombilla(tablero.datos[fila][columna]))
+        {
+            tablero.datos[fila][columna].tipo = SIN_BOMBILLA;
+            cambiarIluminacion(tablero, fila, columna, false);
+        }
+        else if (tablero.datos[fila][columna].tipo != BOMBILLA && estaApagada(tablero.datos[fila][columna]) && seCumpleRestriccion(tablero, fila, columna))
+        {
+            ponBombilla(tablero.datos[fila][columna]);
+            cambiarIluminacion(tablero, fila, columna, true);
+        }
     }
-    else if (tablero.datos[fila][columna].tipo != BOMBILLA && estaApagada(tablero.datos[fila][columna]) && seCumpleRestriccion(tablero, fila, columna))
-    {
-        ponBombilla(tablero.datos[fila][columna]);
-        cambiarIluminacion(tablero, fila, columna, true);
-    }  
+    else
+        cout << "se ha introducido una posicion incorrecta vuelva a intentarlo" << "\n"; //seria mejor evisar las posiciones validas en el main
 }
 
 void cambiarIluminacion(tTablero& tablero, int fila, int columna, bool iluminar)
@@ -146,6 +151,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
         }
     }
 
+
     else if (dir == SUR)
     {
         while (tablero.datos[i][columna].tipo != PARED && i < 4)
@@ -183,6 +189,31 @@ bool seCumpleRestriccion(const tTablero& tablero, int fila, int columna)
 
 bool estaTerminado(const tTablero& tablero)
 {
+    bool terminado = false;
     //revisar en todas las paredes si seCumpleRestriccion();
-    return false;
+    for (int i = 0; i < tablero.nFils; ++i)
+    {
+        for (int j = 0; j < tablero.nCols; ++j)
+        {
+            if (esPared(tablero.datos[i][j]))
+                if (!seCumpleRestriccion(tablero, i, j))
+                    terminado = true;
+        }
+    }
+    return terminado;
+}
+
+void cargaTableroFichero(ifstream& archivo, tTablero& tab)
+{
+    char in;
+    archivo >> tab.nFils;
+    archivo >> tab.nCols;
+    for (int i = 0; i < tab.nFils; ++i)
+    {
+        for (int j = 0; j < tab.nCols; ++j)
+        {
+            archivo >> in;
+            tab.datos[i][j] = charToCelda(in);
+        }
+    }
 }
