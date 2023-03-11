@@ -4,14 +4,14 @@ int numBombillasVecinas(const tTablero& tablero, int fila, int columna)
 {
     int num = 0;
 
-    if (tablero.datos[fila--][columna].tipo == BOMBILLA) num++; //arriba centro
-    else if (tablero.datos[fila][columna--].tipo == BOMBILLA) num++; //izquierda centro
-    else if (tablero.datos[fila][columna++].tipo == BOMBILLA) num++; //derecha centro
-    else if (tablero.datos[fila++][columna].tipo == BOMBILLA) num++; //abajo centro
-    else if (tablero.datos[fila++][columna++].tipo == BOMBILLA) num++; //abajo derecha
-    else if (tablero.datos[fila--][columna--].tipo == BOMBILLA) num++; //izquierda arriba
-    else if (tablero.datos[fila++][columna--].tipo == BOMBILLA) num++; //izquierda abajo
-    else if (tablero.datos[fila--][columna++].tipo == BOMBILLA) num++; //izquierda centro
+    if (esBombilla(tablero.datos[fila--][columna])) num++; //arriba centro
+    if (esBombilla(tablero.datos[fila][columna--])) num++; //izquierda centro
+    if (esBombilla(tablero.datos[fila][columna++])) num++; //derecha centro
+    if (esBombilla(tablero.datos[fila++][columna])) num++; //abajo centro
+    if (esBombilla(tablero.datos[fila++][columna++])) num++; //abajo derecha
+    if (esBombilla(tablero.datos[fila--][columna--])) num++; //izquierda arriba
+    if (esBombilla(tablero.datos[fila++][columna--])) num++; //izquierda abajo
+    if (esBombilla(tablero.datos[fila--][columna++])) num++; //izquierda centro
 
     return num;
 }
@@ -30,13 +30,14 @@ void resetearTablero(tTablero& tablero)
     {
         for (int j = 0; j < tablero.nCols; ++j)
         {
-            if (tablero.datos[i][j].tipo == BOMBILLA)
+            if (!esPared(tablero.datos[i][j]))
             {
                 tablero.datos[i][j].tipo = SIN_BOMBILLA;
                 tablero.datos[i][j].numBombillas = 0;
             }
         }
     }
+    cout << "se ha reseteado el tablero \n";
 }
 
 void ejecutarPos(tTablero& tablero, int fila, int columna)
@@ -50,7 +51,7 @@ void ejecutarPos(tTablero& tablero, int fila, int columna)
             tablero.datos[fila][columna].tipo = SIN_BOMBILLA;
             cambiarIluminacion(tablero, fila, columna, false);
         }
-        else if (tablero.datos[fila][columna].tipo != BOMBILLA && estaApagada(tablero.datos[fila][columna]) && seCumpleRestriccion(tablero, fila, columna))
+        else if (tablero.datos[fila][columna].tipo != BOMBILLA && estaApagada(tablero.datos[fila][columna]))
         {
             ponBombilla(tablero.datos[fila][columna]);
             cambiarIluminacion(tablero, fila, columna, true);
@@ -72,6 +73,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
 {
     int i = fila;
     int j = columna;
+
     if (dir == NORTE)
     {
         while (tablero.datos[i][columna].tipo != PARED && i > 0)
@@ -97,6 +99,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
             }
         }
     }
+
     else if (dir == ESTE)
     {
         while (tablero.datos[fila][j].tipo != PARED && j < 4)
@@ -181,23 +184,39 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
 
 bool seCumpleRestriccion(const tTablero& tablero, int fila, int columna)
 {
-    if (esPared(tablero.datos[fila][columna]) && numBombillasVecinas(tablero, fila, columna) == tablero.datos[fila][columna].numBombillas)
-        return false;
-    else
+    if (esParedRestringida(tablero.datos[fila][columna]) && (numBombillasVecinas(tablero, fila, columna) == numParedRestringida(tablero.datos[fila][columna])))
         return true;
+    else
+        return false;
 }
 
 bool estaTerminado(const tTablero& tablero)
 {
-    bool terminado = false;
+    bool terminado = true;
     //revisar en todas las paredes si seCumpleRestriccion();
     for (int i = 0; i < tablero.nFils; ++i)
     {
         for (int j = 0; j < tablero.nCols; ++j)
         {
             if (esPared(tablero.datos[i][j]))
-                if (!seCumpleRestriccion(tablero, i, j))
-                    terminado = true;
+            {
+                if(esParedRestringida(tablero.datos[i][j]))
+                {
+                    if (!seCumpleRestriccion(tablero, i, j))
+                    {
+                        terminado = false;
+                    }
+                }
+            }
+            else if (esBombilla(tablero.datos[i][j]))
+            {
+
+            }
+            else
+            {
+                if (estaApagada(tablero.datos[i][j]))
+                    terminado = false;
+            }
         }
     }
     return terminado;
