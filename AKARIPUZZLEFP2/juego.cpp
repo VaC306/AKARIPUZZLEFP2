@@ -4,14 +4,17 @@ int numBombillasVecinas(const tTablero& tablero, int fila, int columna)
 {
     int num = 0;
 
-    if (esBombilla(tablero.datos[fila--][columna])) num++; //arriba centro
-    if (esBombilla(tablero.datos[fila][columna--])) num++; //izquierda centro
-    if (esBombilla(tablero.datos[fila][columna++])) num++; //derecha centro
-    if (esBombilla(tablero.datos[fila++][columna])) num++; //abajo centro
-    if (esBombilla(tablero.datos[fila++][columna++])) num++; //abajo derecha
-    if (esBombilla(tablero.datos[fila--][columna--])) num++; //izquierda arriba
-    if (esBombilla(tablero.datos[fila++][columna--])) num++; //izquierda abajo
-    if (esBombilla(tablero.datos[fila--][columna++])) num++; //izquierda centro
+    for (int i = fila - 1; i <= fila + 1; i++) {
+        for (int j = columna - 1; j <= columna + 1; j++) {
+            if (i >= 0 && i < 5 && j >= 0 && j < 5) { // asegurarse de no salirse de la matriz
+                if (i == fila && j == columna) {
+                    continue; // saltar el elemento de interés
+                }
+                if (esBombilla(tablero.datos[i][j]))
+                    num++;
+            }
+        }
+    }
 
     return num;
 }
@@ -86,6 +89,10 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
                     tablero.datos[i][columna].tipo = SIN_BOMBILLA;
                     aumentaIluminacion(tablero.datos[i][columna]);
                 }
+                else if (estaIluminada(tablero.datos[i][columna]))
+                {
+                    aumentaIluminacion(tablero.datos[i][columna]);
+                }
             }
             else
             {
@@ -112,6 +119,10 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
 
                     tablero.datos[fila][j].tipo = SIN_BOMBILLA;
                     tablero.datos[fila][j].numBombillas++;
+                }
+                else if (estaIluminada(tablero.datos[i][columna]))
+                {
+                    aumentaIluminacion(tablero.datos[i][columna]);
                 }
             }
             else
@@ -140,6 +151,10 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
                     tablero.datos[fila][j].tipo = SIN_BOMBILLA;
                     tablero.datos[fila][j].numBombillas++;
                 }
+                else if (estaIluminada(tablero.datos[i][columna]))
+                {
+                    aumentaIluminacion(tablero.datos[i][columna]);
+                }
             }
             else
             {
@@ -165,6 +180,10 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
                 if (estaApagada(tablero.datos[i][columna]))
                 {
                     tablero.datos[i][columna].tipo = SIN_BOMBILLA;
+                    aumentaIluminacion(tablero.datos[i][columna]);
+                }
+                else if (estaIluminada(tablero.datos[i][columna]))
+                {
                     aumentaIluminacion(tablero.datos[i][columna]);
                 }
             }
@@ -194,7 +213,42 @@ bool estaTerminado(const tTablero& tablero)
 {
     bool terminado = true;
     //revisar en todas las paredes si seCumpleRestriccion();
-    for (int i = 0; i < tablero.nFils; ++i)
+    int i = 0; 
+    int j = 0;
+
+    //bucle while para ser mas eficientes y cuando se vea que no termina salir
+    while (i < tablero.nFils && terminado)
+    {
+        while (j < tablero.nCols && terminado)
+        {
+            if (esPared(tablero.datos[i][j]))
+            {
+                if (esParedRestringida(tablero.datos[i][j]))
+                {
+                    if (!seCumpleRestriccion(tablero, i, j))
+                    {
+                        terminado = false;
+                    }
+                }
+            }
+            else if (esBombilla(tablero.datos[i][j]))
+            {
+
+            }
+            else
+            {
+                if (estaApagada(tablero.datos[i][j]))
+                    terminado = false;
+            }
+            if (terminado)
+                j++;
+        }
+        if(terminado) //condicion para que no añada una vez se salga del bucle
+            ++i;
+    }
+
+
+    /*for (int i = 0; i < tablero.nFils; ++i)
     {
         for (int j = 0; j < tablero.nCols; ++j)
         {
@@ -218,7 +272,7 @@ bool estaTerminado(const tTablero& tablero)
                     terminado = false;
             }
         }
-    }
+    }*/
     return terminado;
 }
 
