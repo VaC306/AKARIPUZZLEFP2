@@ -40,28 +40,32 @@ void resetearTablero(tTablero& tablero)
             }
         }
     }
-    cout << "se ha reseteado el tablero \n";
+    cout << "\n" << RED << "se ha reseteado el tablero \n";
 }
 
 void ejecutarPos(tTablero& tablero, int fila, int columna)
 {
     int i = fila;
     int j = columna;
-    if (i <= tablero.nFils && j <= tablero.nCols)
-    {
-        if (esBombilla(tablero.datos[fila][columna]))
-        {
-            tablero.datos[fila][columna].tipo = SIN_BOMBILLA;
-            cambiarIluminacion(tablero, fila, columna, false);
-        }
-        else if (tablero.datos[fila][columna].tipo != BOMBILLA && estaApagada(tablero.datos[fila][columna]))
-        {
-            ponBombilla(tablero.datos[fila][columna]);
-            cambiarIluminacion(tablero, fila, columna, true);
-        }
-    }
+
+    if (fila == -1 && columna == -1)
+        resetearTablero(tablero);
     else
-        cout << "se ha introducido una posicion incorrecta vuelva a intentarlo" << "\n"; //seria mejor evisar las posiciones validas en el main
+        if (i <= tablero.nFils && j <= tablero.nCols)
+        {
+            if (esBombilla(celdaEnPos(tablero, fila, columna)))
+            {
+                tablero.datos[fila][columna].tipo = SIN_BOMBILLA;
+                cambiarIluminacion(tablero, fila, columna, false);
+            }
+            else if (!esBombilla(celdaEnPos(tablero, fila, columna)) && estaApagada(celdaEnPos(tablero, fila, columna)))
+            {
+                ponBombilla(tablero.datos[fila][columna]);
+                cambiarIluminacion(tablero, fila, columna, true);
+            }
+        }
+        else
+            cout << "\n" << RED << "se ha introducido una posicion incorrecta vuelva a intentarlo" << "\n"; //seria mejor evisar las posiciones validas en el main
 }
 
 void cambiarIluminacion(tTablero& tablero, int fila, int columna, bool iluminar)
@@ -200,9 +204,31 @@ bool seCumpleRestriccion(const tTablero& tablero, int fila, int columna)
 bool estaTerminado(const tTablero& tablero)
 {
     bool terminado = true;
-    //revisar en todas las paredes si seCumpleRestriccion();
     //int i = 0; 
     //int j = 0;
+
+    for (int i = 0; i < tablero.nFils; ++i)
+    {
+        for (int j = 0; j < tablero.nCols; ++j)
+        {
+            if (esPared(tablero.datos[i][j]))
+            {
+                if (esParedRestringida(tablero.datos[i][j]))
+                {
+                    if (!seCumpleRestriccion(tablero, i, j))
+                    {
+                        terminado = false;
+                    }
+                }
+            }
+            else
+            {
+                if (estaApagada(tablero.datos[i][j]))
+                    terminado = false;
+            }
+        }
+    }
+    return terminado;
 
     //bucle while para ser mas eficientes y cuando se vea que no termina salir
     //while (i < tablero.nFils && terminado)
@@ -234,29 +260,6 @@ bool estaTerminado(const tTablero& tablero)
     //    if (j == tablero.nCols)
     //        j = 0;
     //}
-
-    for (int i = 0; i < tablero.nFils; ++i)
-    {
-        for (int j = 0; j < tablero.nCols; ++j)
-        {
-            if (esPared(tablero.datos[i][j]))
-            {
-                if (esParedRestringida(tablero.datos[i][j]))
-                {
-                    if (!seCumpleRestriccion(tablero, i, j))
-                    {
-                        terminado = false;
-                    }
-                }
-            }
-            else
-            {
-                if (estaApagada(tablero.datos[i][j]))
-                    terminado = false;
-            }
-        }
-    }
-    return terminado;
 }
 
 void cargaTableroFichero(ifstream& archivo, tTablero& tab)

@@ -29,16 +29,13 @@ int main()
             mostrar(tab);
 
             acciones++;
-
-            if (fila == -1 && columna == -1)
-                resetearTablero(tab);
         }
 
-        if (fila = -1 && columna == 0)
+        if (abandono(fila, columna))
         {
             cout << "se ha abandonado el juego! \n";
         }
-        else if (estaTerminado)
+        else if (estaTerminado(tab))
         {
             cout << "has acabado el juego! \n";
         }
