@@ -10,8 +10,7 @@ int main()
 {
     tTablero tab;
     ifstream archivo;
-    int fila, columna, acciones = 0;
-    bool terminado, abandonado;
+    int fila = 0, columna = 0, acciones = 0;
     archivo.open(nombreArchivo);
 
     if (!archivo.is_open())
@@ -20,34 +19,32 @@ int main()
     {
         leer(archivo, tab);
         mostrar(tab);
-        cout << "introduzca la fila y columna donde quiere realizar un cambio: \n";
-        cin >> fila >> columna;
-        do
+
+        while (!estaTerminado(tab) && !abandono(fila, columna))
         {
-            ejecutarPos(tab, fila, columna);
-            mostrar(tab);
             cout << "introduzca la fila y columna donde quiere realizar un cambio: \n";
             cin >> fila >> columna;
+
+            ejecutarPos(tab, fila, columna);
+            mostrar(tab);
+
             acciones++;
 
             if (fila == -1 && columna == -1)
                 resetearTablero(tab);
+        }
 
-            terminado = estaTerminado(tab);
-            abandonado = abandono(fila, columna);
-
-        } while (!terminado || !abandono);
-
-        if (abandonado)
+        if (fila = -1 && columna == 0)
         {
             cout << "se ha abandonado el juego! \n";
         }
-        else if (terminado)
+        else if (estaTerminado)
         {
             cout << "has acabado el juego! \n";
         }
         else
             acciones++;
+
         cout << "\n" << RED << "el numero total de acciones que se han realizado es de : " << acciones<< RESET <<"\n";
     }
 

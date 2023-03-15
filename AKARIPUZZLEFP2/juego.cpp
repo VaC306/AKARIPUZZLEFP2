@@ -98,10 +98,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
             {
                 if (estaIluminada(tablero.datos[i][columna]))
                 {
-                    while (!estaApagada(tablero.datos[i][columna]))
-                    {
-                        reduceIluminacion(tablero.datos[i][columna]);
-                    }
+                    reduceIluminacion(tablero.datos[i][columna]);
                 }
             }
         }
@@ -129,10 +126,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
             {
                 if (estaIluminada(tablero.datos[fila][j]))
                 {
-                    while (!estaApagada(tablero.datos[fila][j]))
-                    {
-                        reduceIluminacion(tablero.datos[fila][j]);
-                    }
+                    reduceIluminacion(tablero.datos[fila][j]);
                 }
             }
         }
@@ -160,10 +154,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
             {
                 if (estaIluminada(tablero.datos[fila][j]))
                 {
-                    while (!estaApagada(tablero.datos[fila][j]))
-                    {
-                        reduceIluminacion(tablero.datos[fila][j]);
-                    }
+                    reduceIluminacion(tablero.datos[fila][j]);
                 }
             }
         }
@@ -191,10 +182,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
             {
                 if (estaIluminada(tablero.datos[i][columna]))
                 {
-                    while (!estaApagada(tablero.datos[i][columna]))
-                    {
-                        reduceIluminacion(tablero.datos[i][columna]);
-                    }
+                    reduceIluminacion(tablero.datos[i][columna]);
                 }
             }
         }
@@ -213,13 +201,43 @@ bool estaTerminado(const tTablero& tablero)
 {
     bool terminado = true;
     //revisar en todas las paredes si seCumpleRestriccion();
-    int i = 0; 
-    int j = 0;
+    //int i = 0; 
+    //int j = 0;
 
     //bucle while para ser mas eficientes y cuando se vea que no termina salir
-    while (i < tablero.nFils && terminado)
+    //while (i < tablero.nFils && terminado)
+    //{
+    //    while (j < tablero.nCols && terminado)
+    //    {
+    //        if (esPared(tablero.datos[i][j]))
+    //        {
+    //            if (esParedRestringida(tablero.datos[i][j]))
+    //            {
+    //                if (!seCumpleRestriccion(tablero, i, j))
+    //                {
+    //                    terminado = false;
+    //                }
+    //            }
+    //        }
+    //        else
+    //        {
+    //            if (estaApagada(tablero.datos[i][j]))
+    //                terminado = false;
+    //        }
+    //        if (terminado)
+    //            j++;
+    //    }
+    //    if ((i == 4 && j == 4 )&& !terminado)
+    //        terminado = true;
+    //    if(terminado) //condicion para que no añada una vez se salga del bucle
+    //        ++i;
+    //    if (j == tablero.nCols)
+    //        j = 0;
+    //}
+
+    for (int i = 0; i < tablero.nFils; ++i)
     {
-        while (j < tablero.nCols && terminado)
+        for (int j = 0; j < tablero.nCols; ++j)
         {
             if (esPared(tablero.datos[i][j]))
             {
@@ -231,48 +249,13 @@ bool estaTerminado(const tTablero& tablero)
                     }
                 }
             }
-            else if (esBombilla(tablero.datos[i][j]))
-            {
-
-            }
             else
             {
                 if (estaApagada(tablero.datos[i][j]))
                     terminado = false;
             }
-            if (terminado)
-                j++;
         }
-        if(terminado) //condicion para que no añada una vez se salga del bucle
-            ++i;
     }
-
-
-    /*for (int i = 0; i < tablero.nFils; ++i)
-    {
-        for (int j = 0; j < tablero.nCols; ++j)
-        {
-            if (esPared(tablero.datos[i][j]))
-            {
-                if(esParedRestringida(tablero.datos[i][j]))
-                {
-                    if (!seCumpleRestriccion(tablero, i, j))
-                    {
-                        terminado = false;
-                    }
-                }
-            }
-            else if (esBombilla(tablero.datos[i][j]))
-            {
-
-            }
-            else
-            {
-                if (estaApagada(tablero.datos[i][j]))
-                    terminado = false;
-            }
-        }
-    }*/
     return terminado;
 }
 
