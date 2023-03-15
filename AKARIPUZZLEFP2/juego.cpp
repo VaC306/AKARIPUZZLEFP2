@@ -65,7 +65,7 @@ void ejecutarPos(tTablero& tablero, int fila, int columna)
             }
         }
         else
-            cout << "\n" << RED << "se ha introducido una posicion incorrecta vuelva a intentarlo" << "\n"; //seria mejor evisar las posiciones validas en el main
+            cout << "\n" << RED << "se ha introducido una posicion incorrecta vuelva a intentarlo" << RESET <<"\n"; //seria mejor evisar las posiciones validas en el main
 }
 
 void cambiarIluminacion(tTablero& tablero, int fila, int columna, bool iluminar)

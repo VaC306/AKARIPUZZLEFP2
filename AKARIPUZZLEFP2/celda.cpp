@@ -18,6 +18,8 @@ int charToInt(char in)
         return 3;
     else if (in == '4')
         return 4;
+    else
+        return -1;
 }
 
 char intToChar(int in)
@@ -32,6 +34,8 @@ char intToChar(int in)
         return '3';
     else if (in == 4)
         return '4';
+    else
+        return -1;
 }
 
 char celdaToChar(const tCelda& celda)
