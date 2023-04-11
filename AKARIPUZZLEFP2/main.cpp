@@ -4,17 +4,20 @@
 #include "juego.h"
 using namespace std;
 
-const string nombreArchivo = "tablero.txt";
-
 int main()
 {
     tTablero tab;
+    string nombreArchivo;
     ifstream archivo;
     int fila = 0, columna = 0, acciones = 0;
+
+    cout << "introduzca el nombre del archivo que quiere abrir\n";
+    cin >> nombreArchivo;
+
     archivo.open(nombreArchivo);
 
     if (!archivo.is_open())
-        cout << "el archivo no se pudo abrir\n";
+        cout << "el archivo no se pudo abrir o no se ha encontrado\n";
     else
     {
         leer(archivo, tab);

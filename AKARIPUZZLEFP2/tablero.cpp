@@ -27,11 +27,11 @@ void mostrarCeldas(const tTablero& tab) {
         cout << "\t" << LBLUE << setw(HUECOS) << fila << RESET << '|';
         // mostrar contenido de la fila del tablero
         for (int col = 0; col < numCols(tab); col++) {
-            if (esBombilla(tab.datos[fila][col])) cout << BG_YELLOW << BLACK;
+            if (esBombilla(celdaEnPos(tab, fila, col))) cout << BG_YELLOW << BLACK;
             else
-                if (esParedRestringida(tab.datos[fila][col])) cout << BG_BLACK << WHITE;
+                if (esParedRestringida(celdaEnPos(tab, fila, col))) cout << BG_BLACK << WHITE;
                 else
-                    if (estaApagada(tab.datos[fila][col])) cout << BG_WHITE << WHITE;
+                    if (estaApagada(celdaEnPos(tab, fila, col))) cout << BG_WHITE << WHITE;
                     else
                         if (estaIluminada(tab.datos[fila][col])) cout << BG_YELLOW << WHITE;
             cout << setw(HUECOS) << setfill(' ') << celdaToChar(tab.datos[fila][col]) << " " << RESET;
@@ -64,9 +64,10 @@ void leer(ifstream& archivo, tTablero& tab)
     char in;
     archivo >> tab.nFils;
     archivo >> tab.nCols;
-    for (int i = 0; i < tab.nFils; ++i)
+
+    for (int i = 0; i < numFilas(tab); ++i)
     {
-        for (int j = 0; j < tab.nCols; ++j)
+        for (int j = 0; j < numCols(tab); ++j)
         {
             archivo >> in;
             tab.datos[i][j] = charToCelda(in);

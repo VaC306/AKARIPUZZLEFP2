@@ -29,9 +29,9 @@ bool abandono(int fila, int columna)
 
 void resetearTablero(tTablero& tablero)
 {
-    for (int i = 0; i < tablero.nFils; ++i)
+    for (int i = 0; i < numFilas(tablero); ++i)
     {
-        for (int j = 0; j < tablero.nCols; ++j)
+        for (int j = 0; j < numCols(tablero); ++j)
         {
             if (!esPared(tablero.datos[i][j]))
             {
@@ -40,7 +40,7 @@ void resetearTablero(tTablero& tablero)
             }
         }
     }
-    cout << "\n" << RED << "se ha reseteado el tablero \n";
+    cout << "\n" << RED << "se ha reseteado el tablero \n" << RESET;
 }
 
 void ejecutarPos(tTablero& tablero, int fila, int columna)
@@ -83,7 +83,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
 
     if (dir == NORTE)
     {
-        while (tablero.datos[i][columna].tipo != PARED && i > 0)
+        while (!esPared(celdaEnPos(tablero, i, columna)) && i > 0)
         {
             --i;
             if (iluminar)
@@ -110,7 +110,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
 
     else if (dir == ESTE)
     {
-        while (tablero.datos[fila][j].tipo != PARED && j < 4)
+        while (!esPared(celdaEnPos(tablero, fila, j)) && j < numFilas(tablero) - 1)
         {
             ++j;
             if (iluminar)
@@ -119,11 +119,11 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
                 {
 
                     tablero.datos[fila][j].tipo = SIN_BOMBILLA;
-                    tablero.datos[fila][j].numBombillas++;
+                    aumentaIluminacion(tablero.datos[fila][j]);
                 }
-                else if (estaIluminada(tablero.datos[i][columna]))
+                else if (estaIluminada(tablero.datos[fila][j]))
                 {
-                    aumentaIluminacion(tablero.datos[i][columna]);
+                    aumentaIluminacion(tablero.datos[fila][j]);
                 }
             }
             else
@@ -138,7 +138,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
 
     else if (dir == OESTE)
     {
-        while (tablero.datos[fila][j].tipo != PARED && j > 0)
+        while (!esPared(celdaEnPos(tablero, fila, j)) && j > 0)
         {
             --j;
             if (iluminar)
@@ -147,11 +147,11 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
                 {
 
                     tablero.datos[fila][j].tipo = SIN_BOMBILLA;
-                    tablero.datos[fila][j].numBombillas++;
+                    aumentaIluminacion(tablero.datos[fila][j]);
                 }
-                else if (estaIluminada(tablero.datos[i][columna]))
+                else if (estaIluminada(tablero.datos[fila][j]))
                 {
-                    aumentaIluminacion(tablero.datos[i][columna]);
+                    aumentaIluminacion(tablero.datos[fila][j]);
                 }
             }
             else
@@ -167,7 +167,7 @@ void cambiarIluminacionDir(tTablero& tablero, int fila, int columna, tDir dir, b
 
     else if (dir == SUR)
     {
-        while (tablero.datos[i][columna].tipo != PARED && i < 4)
+        while (!esPared(celdaEnPos(tablero, i, columna)) && i < numFilas(tablero) - 1)
         {
             ++i;
             if (iluminar)
@@ -204,12 +204,10 @@ bool seCumpleRestriccion(const tTablero& tablero, int fila, int columna)
 bool estaTerminado(const tTablero& tablero)
 {
     bool terminado = true;
-    //int i = 0; 
-    //int j = 0;
 
-    for (int i = 0; i < tablero.nFils; ++i)
+    for (int i = 0; i < numFilas(tablero); ++i)
     {
-        for (int j = 0; j < tablero.nCols; ++j)
+        for (int j = 0; j < numCols(tablero); ++j)
         {
             if (esPared(tablero.datos[i][j]))
             {
@@ -229,37 +227,6 @@ bool estaTerminado(const tTablero& tablero)
         }
     }
     return terminado;
-
-    //bucle while para ser mas eficientes y cuando se vea que no termina salir
-    //while (i < tablero.nFils && terminado)
-    //{
-    //    while (j < tablero.nCols && terminado)
-    //    {
-    //        if (esPared(tablero.datos[i][j]))
-    //        {
-    //            if (esParedRestringida(tablero.datos[i][j]))
-    //            {
-    //                if (!seCumpleRestriccion(tablero, i, j))
-    //                {
-    //                    terminado = false;
-    //                }
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (estaApagada(tablero.datos[i][j]))
-    //                terminado = false;
-    //        }
-    //        if (terminado)
-    //            j++;
-    //    }
-    //    if ((i == 4 && j == 4 )&& !terminado)
-    //        terminado = true;
-    //    if(terminado) //condicion para que no añada una vez se salga del bucle
-    //        ++i;
-    //    if (j == tablero.nCols)
-    //        j = 0;
-    //}
 }
 
 void cargaTableroFichero(ifstream& archivo, tTablero& tab)
@@ -267,9 +234,10 @@ void cargaTableroFichero(ifstream& archivo, tTablero& tab)
     char in;
     archivo >> tab.nFils;
     archivo >> tab.nCols;
-    for (int i = 0; i < tab.nFils; ++i)
+
+    for (int i = 0; i < numFilas(tab); ++i)
     {
-        for (int j = 0; j < tab.nCols; ++j)
+        for (int j = 0; j < numCols(tab); ++j)
         {
             archivo >> in;
             tab.datos[i][j] = charToCelda(in);
